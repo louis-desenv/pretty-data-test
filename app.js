@@ -31,10 +31,10 @@ function pushDATA(rowNumber, data){
 
   function fetchDATA() {
     gapi.client.init({
-      apiKey: 'ace4009652bd90ab9026c08c20a3648c1b0e3d97',
-     clientId: '112296647260442305135.apps.googleusercontent.com',
+      apiKey: 'AIzaSyBHJ0g53CuFKmpjmIxxxmdatmAE1w-s2y8',
+    // clientId: '112296647260442305135.apps.googleusercontent.com',
       //discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"],
-      scope: "https://www.googleapis.com/auth/spreadsheets.readonly"
+     //scope: "https://www.googleapis.com/auth/spreadsheets.readonly"
     }).then(() => {
         return gapi.client.sheets.spreadsheets.values.get({
             spreadsheetId: SPREADSHEET_ID,
