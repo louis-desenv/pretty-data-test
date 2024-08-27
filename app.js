@@ -6,7 +6,7 @@ const RANGE = 'Sheet1!A2:a8'; // Adjust the range according to your needs
 const data = [100, 200, 150, 250, 180]; // Sample data
 
 function loadGapiClient() {
-    gapi.load('client:auth2', fetchDATA);
+    gapi.load('client', fetchDATA);
   }
 
 
