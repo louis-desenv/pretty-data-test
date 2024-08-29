@@ -66,6 +66,9 @@ function checkForChanges(spreadsheetId) {
       console.log("Spreadsheet data changed!");
       // Handle the detected change
     }
+    else{
+      console.log("Spreadsheet didnt changed!");
+    }
     previousData = newData;
   });
 }
