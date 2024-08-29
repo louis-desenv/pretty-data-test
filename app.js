@@ -1,6 +1,7 @@
 // Load the Google API Client on page load
 const SPREADSHEET_ID = "1fBtK-UTw0nDHb0RIXTcK55jWBZDzksPloGvgUBhLo0M";
 const RANGE = 'Sheet1!B2:B8'; // Adjust the range according to your needs
+let previousData = null;
 
 function loadGapiClient() {
     gapi.load('client', initializeGapiClient);
@@ -56,7 +57,6 @@ setInterval(() => {
   checkForChanges(SPREADSHEET_ID);
 }, 10000); // Check every 30 seconds 
 
-let previousData = null;
 
 function checkForChanges(spreadsheetId) {
   gapi.client.sheets.spreadsheets.get({
