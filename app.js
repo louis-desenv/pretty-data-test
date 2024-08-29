@@ -1,6 +1,6 @@
 // Load the Google API Client on page load
-const SPREADSHEET_ID = "1dkpIl2ohewe57ugNtOxLnXeftbJvqb03A_CEmcSfWxc";
-const RANGE = 'Sheet1!A2:A8'; // Adjust the range according to your needs
+const SPREADSHEET_ID = "1fBtK-UTw0nDHb0RIXTcK55jWBZDzksPloGvgUBhLo0M";
+const RANGE = 'Sheet1!B2:B8'; // Adjust the range according to your needs
 
 function loadGapiClient() {
     gapi.load('client', initializeGapiClient);
