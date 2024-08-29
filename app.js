@@ -66,10 +66,14 @@ function checkForChanges(spreadsheetId) {
     if (previousData && JSON.stringify(previousData) !== JSON.stringify(newData)) {
       console.log("Spreadsheet data changed!");
       // Handle the detected change
+      const result = response.result;
+      pushDATA(result.values);
+
     }
     else{
       console.log("Spreadsheet didnt changed!");
     }
-    previousData = newData;
+    
   });
+
 }
