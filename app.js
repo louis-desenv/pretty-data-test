@@ -27,8 +27,8 @@ function fetchDATA() {
         console.log(`${numRows} rows retrieved.`);
         pushDATA(result.values);
     }).catch(error => {
-        console.error('Error fetching data:', error);
-        document.getElementById('barChart').innerText = 'Error fetching data';
+        console.error('Error fetching data:!', error);
+        document.getElementById('barChart').innerText = error;
     });
 }
 
