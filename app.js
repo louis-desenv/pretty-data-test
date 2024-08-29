@@ -50,3 +50,22 @@ function pushDATA(data) {
 }
 
 window.onload = loadGapiClient;
+
+setInterval(() => {
+  checkForChanges(SPREADSHEET_ID);
+}, 10000); // Check every 30 seconds 
+
+let previousData = null;
+
+function checkForChanges(spreadsheetId) {
+  gapi.client.sheets.spreadsheets.get({
+    spreadsheetId: spreadsheetId,
+  }).then((response) => {
+    const newData = response.result;
+    if (previousData && JSON.stringify(previousData) !== JSON.stringify(newData)) {
+      console.log("Spreadsheet data changed!");
+      // Handle the detected change
+    }
+    previousData = newData;
+  });
+}
