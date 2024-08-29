@@ -28,7 +28,7 @@ function fetchDATA() {
         pushDATA(result.values);
     }).catch(error => {
         console.error('Error fetching data:!', error);
-        document.getElementById('barChart').innerText = 'Error fetching data';
+        document.getElementById('barChart').innerText = error;
     });
 }
 
