@@ -23,6 +23,7 @@ function fetchDATA() {
         range: RANGE,
     }).then(response => {
         const result = response.result;
+        previousData = response.result;
         const numRows = result.values ? result.values.length : 0;
         console.log(`${numRows} rows retrieved.`);
         pushDATA(result.values);
