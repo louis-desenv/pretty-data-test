@@ -2,6 +2,8 @@
 const SPREADSHEET_ID = "1fBtK-UTw0nDHb0RIXTcK55jWBZDzksPloGvgUBhLo0M";
 const RANGE = 'Sheet1!B2:B8'; // Adjust the range according to your needs
 let previousData = null;
+var SCOPES = 'https://www.googleapis.com/auth/presentations.readonly';
+var clientID = "112296647260442305135.apps.googleusercontent.com";
 
 function loadGapiClient() {
     gapi.load('client', initializeGapiClient);
@@ -14,11 +16,12 @@ function initializeGapiClient() {
         apiKey: 'AIzaSyBHJ0g53CuFKmpjmIxxxmdatmAE1w-s2y8',
         discoveryDocs: [
           "https://sheets.googleapis.com/$discovery/rest?version=v4",
-        "https://slides.googleapis.com/$discovery/rest?version=v1"]
+        "https://slides.googleapis.com/$discovery/rest?version=v1"],
+        scope:SCOPES
     }).then(() => {
 
         fetchDATA();
-        return gapi.client.load('https://slides.googleapis.com/$discovery/rest?version=v1');
+        gapi.auth2.getAuthInstance().signIn(); 
 
     }).catch(error => {
         console.error('Error initializing GAPI client:', error);
