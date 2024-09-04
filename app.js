@@ -7,6 +7,8 @@ function loadGapiClient() {
     gapi.load('client', initializeGapiClient);
 } 
 
+
+
 function initializeGapiClient() {
     gapi.client.init({
         apiKey: 'AIzaSyBHJ0g53CuFKmpjmIxxxmdatmAE1w-s2y8',
@@ -27,11 +29,55 @@ function fetchDATA() {
         previousData = response.result;
         const numRows = result.values ? result.values.length : 0;
         console.log(`${numRows} rows retrieved.`);
-        pushDATA(result.values);
+        var divID = pushDATA(result.values);
+      captureAndInsert("1rjygC5Il0jA57UuVm_TQK268z3ydIyV7_JtU_IGPKL4",divID)
     }).catch(error => {
         console.error('Error fetching data:!', error);
         document.getElementById('barChart').innerText = error;
     });
+}
+
+function insertImageIntoSlide(presentationId, imageDataUrl) {
+  gapi.client.slides.presentations.batchUpdate({
+      presentationId: presentationId,
+      requests: [{
+          createImage: {
+              elementProperties: {
+                  pageObjectId: 'p1', 
+                  size: {
+                      height: {
+                          magnitude: 400,
+                          unit: 'PT'
+                      },
+                      width: {
+                          magnitude: 600,
+                          unit: 'PT'
+                      }
+                  },
+                  transform: {
+                      scaleX: 1,
+                      scaleY: 1,
+                      translateX: 0,
+                      translateY: 0,
+                      unit: 'PT'
+                  }
+              },
+              imageUrl: imageDataUrl
+          }
+      }]
+  }).then((response) => {
+      console.log('!!Image inserted into slide:', response);
+  }, (error) => {
+      console.error('!!Error inserting image into slide:', error);
+  });
+}
+
+function captureAndInsert(presentationID,divID) {
+  const div = document.getElementById('capture');
+  html2canvas(div).then(canvas => {
+      const imgData = canvas.toDataURL('image/png');
+      insertImageIntoSlide(presentationID, imgData);
+  });
 }
 
 function pushDATA(data) {
@@ -48,6 +94,8 @@ function pushDATA(data) {
         bar.appendChild(barText);
 
         barChart.appendChild(bar);
+
+
     });
 }
 
