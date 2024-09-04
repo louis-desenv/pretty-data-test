@@ -30,7 +30,7 @@ function fetchDATA() {
         const numRows = result.values ? result.values.length : 0;
         console.log(`${numRows} rows retrieved.`);
         var divID = pushDATA(result.values);
-      captureAndInsert("1rjygC5Il0jA57UuVm_TQK268z3ydIyV7_JtU_IGPKL4",divID)
+      captureAndInsert("1rjygC5Il0jA57UuVm_TQK268z3ydIyV7_JtU_IGPKL4",divID);
     }).catch(error => {
         console.error('Error fetching data:!', error);
         document.getElementById('barChart').innerText = error;
@@ -95,7 +95,7 @@ function pushDATA(data) {
 
         barChart.appendChild(bar);
 
-
+return barChart;
     });
 }
 
