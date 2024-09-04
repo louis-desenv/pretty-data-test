@@ -12,9 +12,14 @@ function loadGapiClient() {
 function initializeGapiClient() {
     gapi.client.init({
         apiKey: 'AIzaSyBHJ0g53CuFKmpjmIxxxmdatmAE1w-s2y8',
-        discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"]
+        discoveryDocs: [
+          "https://sheets.googleapis.com/$discovery/rest?version=v4",
+        "https://slides.googleapis.com/$discovery/rest?version=v1"]
     }).then(() => {
+
         fetchDATA();
+        return gapi.client.load('https://slides.googleapis.com/$discovery/rest?version=v1');
+
     }).catch(error => {
         console.error('Error initializing GAPI client:', error);
     });
@@ -39,7 +44,6 @@ function fetchDATA() {
 
 function insertImageIntoSlide(presentationId, imageDataUrl) {
 
-  gapi.client.load('https://slides.googleapis.com/$discovery/rest?version=v1');
   if (typeof gapi !== 'undefined') {
   gapi.client.slides.presentations.batchUpdate({
       presentationId: presentationId,
