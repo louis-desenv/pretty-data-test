@@ -95,8 +95,9 @@ function pushDATA(data) {
 
         barChart.appendChild(bar);
 
-return barChart;
+
     });
+    return barChart;
 }
 
 window.onload = loadGapiClient;
