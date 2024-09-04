@@ -38,6 +38,7 @@ function fetchDATA() {
 }
 
 function insertImageIntoSlide(presentationId, imageDataUrl) {
+  if (typeof gapi !== 'undefined') {
   gapi.client.slides.presentations.batchUpdate({
       presentationId: presentationId,
       requests: [{
@@ -70,6 +71,10 @@ function insertImageIntoSlide(presentationId, imageDataUrl) {
   }, (error) => {
       console.error('!!Error inserting image into slide:', error);
   });
+}
+else{
+  console.log("didnt load gapi");
+}
 }
 
 function captureAndInsert(presentationID,div) {
