@@ -72,8 +72,8 @@ function insertImageIntoSlide(presentationId, imageDataUrl) {
   });
 }
 
-function captureAndInsert(presentationID,divID) {
-  const div = document.getElementById(divID);
+function captureAndInsert(presentationID,div) {
+  //const div = document.getElementById(divID);
   html2canvas(div).then(canvas => {
       const imgData = canvas.toDataURL('image/png');
       insertImageIntoSlide(presentationID, imgData);
