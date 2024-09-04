@@ -43,7 +43,7 @@ function insertImageIntoSlide(presentationId, imageDataUrl) {
       requests: [{
           createImage: {
               elementProperties: {
-                  pageObjectId: 'p1', 
+                  pageObjectId: 'p2', 
                   size: {
                       height: {
                           magnitude: 400,
@@ -73,7 +73,7 @@ function insertImageIntoSlide(presentationId, imageDataUrl) {
 }
 
 function captureAndInsert(presentationID,divID) {
-  const div = document.getElementById('capture');
+  const div = document.getElementById(divID);
   html2canvas(div).then(canvas => {
       const imgData = canvas.toDataURL('image/png');
       insertImageIntoSlide(presentationID, imgData);
@@ -101,9 +101,9 @@ function pushDATA(data) {
 
 window.onload = loadGapiClient;
 
-setInterval(() => {
-  checkForChanges(SPREADSHEET_ID);
-}, 10000); // Check every 30 seconds 
+// setInterval(() => {
+//   checkForChanges(SPREADSHEET_ID);
+// }, 10000); // Check every 30 seconds 
 
 
 function checkForChanges(spreadsheetId) {
