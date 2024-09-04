@@ -38,6 +38,8 @@ function fetchDATA() {
 }
 
 function insertImageIntoSlide(presentationId, imageDataUrl) {
+
+  gapi.client.load('https://slides.googleapis.com/$discovery/rest?version=v1');
   if (typeof gapi !== 'undefined') {
   gapi.client.slides.presentations.batchUpdate({
       presentationId: presentationId,
