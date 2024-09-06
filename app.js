@@ -6,13 +6,14 @@ var SCOPES = 'https://www.googleapis.com/auth/presentations.readonly';
 var clientID = "112296647260442305135.apps.googleusercontent.com";
 
 function loadGapiClient() {
-    gapi.load('client', initializeGapiClient);
+    gapi.load('client:auth2', initializeGapiClient);
 } 
 
 
 
 function initializeGapiClient() {
     gapi.client.init({
+      clientId:clientID,
         apiKey: 'AIzaSyBHJ0g53CuFKmpjmIxxxmdatmAE1w-s2y8',
         discoveryDocs: [
           "https://sheets.googleapis.com/$discovery/rest?version=v4",
@@ -88,7 +89,7 @@ else{
 
 function captureAndInsert(presentationID,div) {
   //const div = document.getElementById(divID);
-  html2canvas(div).then(canvas => {
+  html2canvas(div).then(canvas => { 
       const imgData = canvas.toDataURL('image/png');
       insertImageIntoSlide(presentationID, imgData);
   });
