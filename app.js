@@ -3,7 +3,7 @@ const SPREADSHEET_ID = "1fBtK-UTw0nDHb0RIXTcK55jWBZDzksPloGvgUBhLo0M";
 const RANGE = 'Sheet1!B2:B8'; // Adjust the range according to your needs
 let previousData = null;
 var SCOPES = 'https://www.googleapis.com/auth/presentations.readonly';
-var clientID = "112296647260442305135.apps.googleusercontent.com";
+var clientID = "558256588490-bsn7ie5om6ef41mkgcpf6ttuj3mov5hi.apps.googleusercontent.com";
 
 function loadGapiClient() {
     gapi.load('client:auth2', initializeGapiClient);
