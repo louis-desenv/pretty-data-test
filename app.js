@@ -8,7 +8,10 @@ let tokenClient;
 let accessToken = null;
 
 
+document.getElementById('signin-button').onclick = handleAuth();
+
 function handleAuth() {
+  alert("ok");
   google.accounts.oauth2.initTokenClient({
       client_id: 'clientID.apps.googleusercontent.com',
       scope: ' https://www.googleapis.com/auth/presentations https://www.googleapis.com/auth/spreadsheets.readonly',
@@ -130,29 +133,10 @@ function pushDATA(data) {
     return barChart;
 }
 
-window.onload = handleAuth();
+
 
 // setInterval(() => {
 //   checkForChanges(SPREADSHEET_ID);
 // }, 10000); // Check every 30 seconds 
 
 
-function checkForChanges(spreadsheetId) {
-  gapi.client.sheets.spreadsheets.get({
-    spreadsheetId: spreadsheetId,
-  }).then((response) => {
-    const newData = response.result;
-    if (previousData && JSON.stringify(previousData) !== JSON.stringify(newData)) {
-      console.log("Spreadsheet data changed!");
-      // Handle the detected change
-      const result = response.result;
-      pushDATA(result.values);
-
-    }
-    else{
-      console.log("Spreadsheet didnt changed!");
-    }
-    
-  });
-
-}
