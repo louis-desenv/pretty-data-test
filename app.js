@@ -1,35 +1,46 @@
 // Load the Google API Client on page load
-const SPREADSHEET_ID = "1fBtK-UTw0nDHb0RIXTcK55jWBZDzksPloGvgUBhLo0M";
-const RANGE = 'Sheet1!B2:B8'; // Adjust the range according to your needs
+const spreadsheetId = "1fBtK-UTw0nDHb0RIXTcK55jWBZDzksPloGvgUBhLo0M";
+const range = 'Sheet1!B2:B8'; // Adjust the range according to your needs
 let previousData = null;
 var SCOPES = 'https://www.googleapis.com/auth/presentations.readonly';
 var clientID = "558256588490-bsn7ie5om6ef41mkgcpf6ttuj3mov5hi.apps.googleusercontent.com";
-
-function loadGapiClient() {
-    gapi.load('client:auth2', initializeGapiClient);
-} 
+let tokenClient;
+let accessToken = null;
 
 
-
-function initializeGapiClient() {
-    gapi.client.init({
-      clientId:clientID,
-        apiKey: 'AIzaSyBHJ0g53CuFKmpjmIxxxmdatmAE1w-s2y8',
-        discoveryDocs: [
-          "https://sheets.googleapis.com/$discovery/rest?version=v4",
-        "https://slides.googleapis.com/$discovery/rest?version=v1"],
-        scope:SCOPES
-    }).then(() => {
-
-        fetchDATA();
-        gapi.auth2.getAuthInstance().signIn(); 
-
-    }).catch(error => {
-        console.error('Error initializing GAPI client:', error);
-    });
+function handleAuth() {
+  google.accounts.oauth2.initTokenClient({
+      client_id: 'clientID.apps.googleusercontent.com',
+      scope: ' https://www.googleapis.com/auth/presentations https://www.googleapis.com/auth/spreadsheets.readonly',
+      callback: (response) => {
+          console.log('Access token:', response.access_token);
+          accessToken=response.access_token;
+          fetchDATA(); 
+      }
+  }).requestAccessToken();
 }
 
-function fetchDATA() {
+
+async function fetchDATA() {
+
+
+  const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}`, {
+    headers: {
+        'Authorization': `Bearer ${accessToken}`
+    }
+});
+
+if (!response.ok) {
+    console.error('Error fetching data from Sheets:', response.statusText);
+    return;
+}
+const data = await response.json();
+console.log('Spreadsheet Data:', data.values);
+var divID = pushDATA(result.values);
+captureAndInsert("1rjygC5Il0jA57UuVm_TQK268z3ydIyV7_JtU_IGPKL4",divID);
+
+/*
+
     gapi.client.sheets.spreadsheets.values.get({
         spreadsheetId: SPREADSHEET_ID,
         range: RANGE,
@@ -44,14 +55,16 @@ function fetchDATA() {
         console.error('Error fetching data:!', error);
         document.getElementById('barChart').innerText = error;
     });
+
+    */
 }
 
-function insertImageIntoSlide(presentationId, imageDataUrl) {
+async function insertImageIntoSlide(presentationId, imageDataUrl) {
 
-  if (typeof gapi !== 'undefined') {
-  gapi.client.slides.presentations.batchUpdate({
-      presentationId: presentationId,
-      requests: [{
+  
+
+const requestBody = {
+  requests: [{
           createImage: {
               elementProperties: {
                   pageObjectId: 'p2', 
@@ -76,15 +89,17 @@ function insertImageIntoSlide(presentationId, imageDataUrl) {
               imageUrl: imageDataUrl
           }
       }]
-  }).then((response) => {
-      console.log('!!Image inserted into slide:', response);
-  }, (error) => {
-      console.error('!!Error inserting image into slide:', error);
-  });
-}
-else{
-  console.log("didnt load gapi");
-}
+  };
+  const response = await fetch(`https://slides.googleapis.com/v1/presentations/${presentationId}:batchUpdate`, {
+    method: 'POST',
+    headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(requestBody)
+});
+
+
 }
 
 function captureAndInsert(presentationID,div) {
@@ -115,7 +130,7 @@ function pushDATA(data) {
     return barChart;
 }
 
-window.onload = loadGapiClient;
+window.onload = handleAuth();
 
 // setInterval(() => {
 //   checkForChanges(SPREADSHEET_ID);
