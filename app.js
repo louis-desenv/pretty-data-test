@@ -1,6 +1,6 @@
 // Load the Google API Client on page load
 const spreadsheetId = "1fBtK-UTw0nDHb0RIXTcK55jWBZDzksPloGvgUBhLo0M";
-const range = 'Sheet1!B2:B8'; // Adjust the range according to your needs
+const range = 'Sheet1!B2:B8'; 
 let previousData = null;
 var SCOPES = 'https://www.googleapis.com/auth/presentations.readonly';
 var clientID = "558256588490-bsn7ie5om6ef41mkgcpf6ttuj3mov5hi.apps.googleusercontent.com";
