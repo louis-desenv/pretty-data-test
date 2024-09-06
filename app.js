@@ -8,28 +8,28 @@ let tokenClient;
 let accessToken = null;
 
 
-document.getElementById('signin-button').onclick = handleAuth();
+
 
 function handleAuth() {
-  alert("ok");
+  //alert("ok");
   google.accounts.oauth2.initTokenClient({
-      client_id: 'clientID.apps.googleusercontent.com',
+      client_id: clientID,
       scope: ' https://www.googleapis.com/auth/presentations https://www.googleapis.com/auth/spreadsheets.readonly',
       callback: (response) => {
           console.log('Access token:', response.access_token);
-          accessToken=response.access_token;
-          fetchDATA(); 
+         accessToken=response.access_token;
+          fetchDATA(response.access_token); 
       }
   }).requestAccessToken();
 }
 
 
-async function fetchDATA() {
+async function fetchDATA(token) {
 
 
   const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}`, {
     headers: {
-        'Authorization': `Bearer ${accessToken}`
+        'Authorization': `Bearer ${token}`
     }
 });
 
@@ -39,7 +39,7 @@ if (!response.ok) {
 }
 const data = await response.json();
 console.log('Spreadsheet Data:', data.values);
-var divID = pushDATA(result.values);
+var divID = pushDATA(data.values);
 captureAndInsert("1rjygC5Il0jA57UuVm_TQK268z3ydIyV7_JtU_IGPKL4",divID);
 
 /*
@@ -89,7 +89,7 @@ const requestBody = {
                       unit: 'PT'
                   }
               },
-              imageUrl: imageDataUrl
+              url: imageDataUrl
           }
       }]
   };
