@@ -14,7 +14,7 @@ function handleAuth() {
   //alert("ok");
   google.accounts.oauth2.initTokenClient({
       client_id: clientID,
-      scope: ' https://www.googleapis.com/auth/presentations https://www.googleapis.com/auth/spreadsheets.readonly',
+      scope: ' https://www.googleapis.com/auth/presentations https://www.googleapis.com/auth/spreadsheets.readonly https://www.googleapis.com/auth/drive.file',
       callback: (response) => {
           console.log('Access token:', response.access_token);
          accessToken=response.access_token;
@@ -107,10 +107,23 @@ const requestBody = {
 
 function captureAndInsert(presentationID,div) {
   //const div = document.getElementById(divID);
-  html2canvas(div).then(canvas => { 
-      const imgData = canvas.toDataURL('image/png');
-      insertImageIntoSlide(presentationID, imgData);
-  });
+
+// Main workflow
+html2canvas(div).then(canvas => {
+  canvas.toBlob(async (blob) => {
+      const fileId = await uploadToGoogleDrive(blob, 'image-from-canvas.png');
+      await makeFilePublic(fileId);  // Make the file public
+      const imageUrl = `https://drive.google.com/uc?id=${fileId}`;  // Public URL for the image
+      await insertImageIntoSlide(presentationID, imageUrl);  // Insert the image into the slide
+  }, 'image/png');
+});
+
+  // html2canvas(div).then(canvas => { 
+  //     const imgData = canvas.toDataURL('image/png');
+
+
+  //     insertImageIntoSlide(presentationID, imgData);
+  // });
 }
 
 function pushDATA(data) {
@@ -140,3 +153,39 @@ function pushDATA(data) {
 // }, 10000); // Check every 30 seconds 
 
 
+async function uploadToGoogleDrive(blob, fileName) {
+  const metadata = {
+      name: fileName,
+      mimeType: 'image/png'
+  };
+
+  const formData = new FormData();
+  formData.append('metadata', new Blob([JSON.stringify(metadata)], {type: 'application/json'}));
+  formData.append('file', blob);
+
+  const response = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+      method: 'POST',
+      headers: new Headers({
+          'Authorization': `Bearer ${accessToken}`
+      }),
+      body: formData
+  });
+
+  const fileData = await response.json();
+  return fileData.id;  // Returns the file ID of the uploaded image
+}
+
+async function makeFilePublic(fileId) {
+  await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}/permissions`, {
+      method: 'POST',
+      headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+          role: 'reader',
+          type: 'anyone'
+      })
+  });
+  return `https://drive.google.com/uc?id=${fileId}`;  // Returns the public URL of the image
+}
