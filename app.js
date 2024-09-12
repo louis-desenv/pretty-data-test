@@ -69,7 +69,7 @@ async function insertImageIntoSlide(presentationId, imageDataUrl) {
 const requestBody = {
   requests: [{
           createImage: {
-            objectId: 'imageObjectId',
+            objectId: 'fdfdfdfdfdf',
               elementProperties: {
                   pageObjectId: 'p2', 
                   size: {
