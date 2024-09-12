@@ -69,6 +69,7 @@ async function insertImageIntoSlide(presentationId, imageDataUrl) {
 const requestBody = {
   requests: [{
           createImage: {
+            objectId: 'imageObjectId',
               elementProperties: {
                   pageObjectId: 'p2', 
                   size: {
@@ -157,7 +158,7 @@ async function uploadToGoogleDrive(blob, fileName) {
   const metadata = {
       name: fileName,
       mimeType: 'image/png'
-  };
+  }; 
 
   const formData = new FormData();
   formData.append('metadata', new Blob([JSON.stringify(metadata)], {type: 'application/json'}));
