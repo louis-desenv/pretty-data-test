@@ -64,14 +64,12 @@ captureAndInsert("1rjygC5Il0jA57UuVm_TQK268z3ydIyV7_JtU_IGPKL4",divID);
 
 async function insertImageIntoSlide(presentationId, imageDataUrl) {
 
-  
-
 const requestBody = {
   requests: [{
           createImage: {
           
               elementProperties: {
-                  pageObjectId: 'p2', 
+                  pageObjectId: getFirstSlideId(presentationId), 
                   size: {
                       height: {
                           magnitude: 400,
@@ -115,6 +113,37 @@ else{
 
 
 }
+
+async function getFirstSlideId() {
+    try {
+      // Fetch presentation metadata
+      const response = await fetch(`https://slides.googleapis.com/v1/presentations/${presentationId}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        }
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+  
+      // Check if there are slides and return the pageObjectId of the first slide
+      if (data.slides && data.slides.length > 0) {
+        const firstSlideId = data.slides[0].objectId;
+        console.log(`First slide ID: ${firstSlideId}`);
+        return firstSlideId;
+      } else {
+        throw new Error('No slides found in the presentation.');
+      }
+  
+    } catch (error) {
+      console.error('Error occurred:', error.message);
+    }
+  }
 
 function captureAndInsert(presentationID,div) {
   //const div = document.getElementById(divID);
