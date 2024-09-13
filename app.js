@@ -62,12 +62,12 @@ captureAndInsert("1rjygC5Il0jA57UuVm_TQK268z3ydIyV7_JtU_IGPKL4",divID);
     */
 }
 
-async function insertImageIntoSlide(presentationId, imageDataUrl) {
+ function insertImageIntoSlide(presentationId, imageDataUrl) {
 
 const requestBody = {
   requests: [{
           createImage: {
-          
+            url: imageDataUrl,
               elementProperties: {
                   pageObjectId: getFirstSlideId(presentationId), 
                   size: {
@@ -88,11 +88,11 @@ const requestBody = {
                       unit: 'PT'
                   }
               },
-              url: imageDataUrl
+             
           }
       }]
   };
-  const response = await fetch(`https://slides.googleapis.com/v1/presentations/${presentationId}:batchUpdate`, {
+  const response =  fetch(`https://slides.googleapis.com/v1/presentations/${presentationId}:batchUpdate`, {
     method: 'POST',
     headers: {
         'Authorization': `Bearer ${accessToken}`,
@@ -103,7 +103,7 @@ const requestBody = {
 
 
 if (!response.ok) {
-    const errorResponse = await response.json(); // This will log the full error response from Google
+    const errorResponse =  response.json(); // This will log the full error response from Google
     console.log('Google API Error Response:', errorResponse);
     throw new Error(`HTTP error! Status: ${response.status}`);
 }
