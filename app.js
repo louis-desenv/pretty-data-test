@@ -104,6 +104,14 @@ const requestBody = {
 });
 
 
+if (!response.ok) {
+    const errorResponse = await response.json(); // This will log the full error response from Google
+    console.log('Google API Error Response:', errorResponse);
+    throw new Error(`HTTP error! Status: ${response.status}`);
+}
+
+
+
 }
 
 function captureAndInsert(presentationID,div) {
