@@ -114,7 +114,7 @@ else{
 
 }
 
-async function getFirstSlideId() {
+async function getFirstSlideId(presentationId) {
     try {
       // Fetch presentation metadata
       const response = await fetch(`https://slides.googleapis.com/v1/presentations/${presentationId}`, {
