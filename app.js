@@ -109,7 +109,9 @@ if (!response.ok) {
     console.log('Google API Error Response:', errorResponse);
     throw new Error(`HTTP error! Status: ${response.status}`);
 }
-
+else{
+    console.log("everythin all right");
+}
 
 
 }
