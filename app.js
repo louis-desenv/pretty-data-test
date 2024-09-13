@@ -69,7 +69,7 @@ const requestBody = {
           createImage: {
             url: imageDataUrl,
               elementProperties: {
-                  pageObjectId: getFirstSlideId(presentationId), 
+                  pageObjectId: "g2fd223261d8_1_40", 
                   size: {
                       height: {
                           magnitude: 400,
