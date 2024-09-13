@@ -107,9 +107,8 @@ if (response.ok) {
     
 }
 else{
-    console.log("everythin all right");
+    console.log("error");
    
-    console.log('Google API Error Response:', errorResponse);
 }
 
 
