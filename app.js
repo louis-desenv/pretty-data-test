@@ -108,7 +108,7 @@ if (response.ok) {
 }
 else{
     console.log("everythin all right");
-    const errorResponse =  response.json(); // This will log the full error response from Google
+   
     console.log('Google API Error Response:', errorResponse);
 }
 
