@@ -1,0 +1,41 @@
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr)); /* Responsive column layout */
+    gap: 10px; /* add space between the columns */
+    justify-items: center;
+    font-weight: bold;
+  }
+  
+  .column {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* Align the numbers at the bottom of the column */
+    align-items: center;
+  }
+  
+
+
+
+  .item-down {
+    
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color:#84ffe84f; /* Customize the colors according to your design */
+    margin: 2px 0;
+    font-size: 16px;
+  }
+  
+  .item-up {
+    width: 40px;
+    margin-bottom: 100px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color:#75e2ffff; /* Customize the colors according to your design */
+    margin: 2px 0;
+    font-size: 16px;    
+  }
