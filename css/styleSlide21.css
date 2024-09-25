@@ -1,0 +1,65 @@
+
+
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr)); /* Responsive column layout */
+    gap: 10px; /* add space between the columns */
+    /* justify-items: center; */
+    justify-content: center; /* Center columns horizontally */
+    align-content: center; 
+    font-weight: bold;
+    border:solid green 0px;
+    margin: 0 auto; /* Center the grid horizontally */
+    max-width: 1050px; /* Set a fixed maximum width */
+    
+  }
+
+  .grid-container-bottom {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr)); /* Responsive column layout */
+    gap: 10px; /* add space between the columns */
+    justify-items: center;
+    align-content: center; 
+    font-weight: bold;
+    max-width: 1050px; /* Set a fixed maximum width */;
+    transform: rotate(180deg); /* Flip the div upside down */
+   /* transform-origin: top;  */
+    
+    border:solid red 0px;
+    margin: 0 auto; /* Center the grid horizontally */
+  }
+  
+  .column {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* Align the numbers at the bottom of the column */
+    align-items: center;
+    height: 150px;
+    border:solid gray 0px
+  }
+  
+  
+  .item-down {
+    
+    width: 40px;
+    /* height: 40px; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color:#84ffe84f; /* Customize the colors according to your design */
+    margin: 2px 0;
+    font-size: 16px;
+  }
+  
+  .item-up {
+    width: 40px;
+    margin-bottom: 100px;
+     height: 85px; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color:#75e2ffff; /* Customize the colors according to your design */
+    margin: 2px 0;
+    font-size: 16px;    
+  }
