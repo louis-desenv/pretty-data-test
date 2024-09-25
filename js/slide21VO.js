@@ -1,3 +1,13 @@
+function getRandomColor() {
+    // Generate a random color using hexadecimal values
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
 document.addEventListener("DOMContentLoaded", function() {
     // Access the grid-container div
     
@@ -37,6 +47,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const itemDownDiv = document.createElement('div');
             itemDownDiv.classList.add('item-down');
             itemDownDiv.textContent = '2'; // Add content to item-down
+            itemDownDiv.backgroundColor = getRandomColor();
            columnDiv.appendChild(itemDownDiv);            
             gridContainerBottom.appendChild(columnDiv);
         }
