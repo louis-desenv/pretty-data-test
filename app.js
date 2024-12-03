@@ -3,22 +3,78 @@ const spreadsheetId = "1fBtK-UTw0nDHb0RIXTcK55jWBZDzksPloGvgUBhLo0M";
 const range = 'Sheet1!B2:B8'; 
 let previousData = null;
 var SCOPES = 'https://www.googleapis.com/auth/presentations.readonly';
-var clientID = "558256588490-bsn7ie5om6ef41mkgcpf6ttuj3mov5hi.apps.googleusercontent.com";
+var clientID = "1649941521-cpoo9qbtol2lgvblt87nc4olp9ptjn67.apps.googleusercontent.com";
 let tokenClient;
 let accessToken = null;
 
+function createAndReadFolder(accessToken) {
+  // URL for Google Drive API
+  const url = 'https://www.googleapis.com/drive/v3/files';
 
+  // Metadata for creating a new folder
+  const folderMetadata = {
+      name: "My App Folder",
+      mimeType: "application/vnd.google-apps.folder" // Identifies the file as a folder
+  };
 
+  // Step 1: Create the folder
+  fetch(url, {
+      method: "POST",
+      headers: {
+          "Authorization": `Bearer ${accessToken}`, // Use the access token
+          "Content-Type": "application/json"
+      },
+      body: JSON.stringify(folderMetadata)
+  })
+  .then(response => response.json())
+  .then(data => {
+      if (data.id) {
+          console.log(`Folder created successfully with ID: ${data.id}`);
+
+          // Step 2: Read files inside the folder
+          const folderId = data.id;
+          const listFilesUrl = `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents&fields=files(id,name,mimeType)`;
+
+          return fetch(listFilesUrl, {
+              method: "GET",
+              headers: {
+                  "Authorization": `Bearer ${accessToken}`,
+                  "Content-Type": "application/json"
+              }
+          });
+      } else {
+          throw new Error("Failed to create folder");
+      }
+  })
+  .then(response => response.json())
+  .then(data => {
+      if (data.files && data.files.length > 0) {
+          console.log("Files in folder:");
+          data.files.forEach(file => {
+              console.log(`Name: ${file.name}, ID: ${file.id}, MimeType: ${file.mimeType}`);
+          });
+      } else {
+          console.log("The folder is empty or no files were found.");
+      }
+  })
+  .catch(error => {
+      console.error("Error during folder creation or reading files:", error);
+  });
+}
 
 function handleAuth() {
   //alert("ok");
   google.accounts.oauth2.initTokenClient({
       client_id: clientID,
       scope: ' https://www.googleapis.com/auth/presentations https://www.googleapis.com/auth/spreadsheets.readonly https://www.googleapis.com/auth/drive.file',
+      access_type: 'offline', // Request offline access
+      prompt: 'consent',      // Ensure the user consents to offline access
+  
       callback: (response) => {
           console.log('Access token:', response.access_token);
          accessToken=response.access_token;
-          fetchDATA(response.access_token); 
+          //fetchDATA(response.access_token); 
+          createAndReadFolder(accessToken);
       }
   }).requestAccessToken();
 }
