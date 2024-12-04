@@ -7,6 +7,18 @@ var clientID = "1649941521-cpoo9qbtol2lgvblt87nc4olp9ptjn67.apps.googleuserconte
 let tokenClient;
 let accessToken = null;
 
+function TestUploadFile(div) {
+  //const div = document.getElementById(divID);
+
+// Main workflow
+html2canvas(div).then(canvas => {
+  canvas.toBlob(async (blob) => {
+       await uploadToGoogleDrive(blob, 'image-from-canvas.png');
+   // Public URL for the image
+   }, 'image/png');
+});
+
+
 function createAndReadFolder(accessToken) {
   // URL for Google Drive API
   const url = 'https://www.googleapis.com/drive/v3/files';
@@ -30,6 +42,8 @@ function createAndReadFolder(accessToken) {
   .then(data => {
       if (data.id) {
           console.log(`Folder created successfully with ID: ${data.id}`);
+
+          TestUploadFile(barChart);
 
           // Step 2: Read files inside the folder
           const folderId = data.id;
