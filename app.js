@@ -7,16 +7,17 @@ var clientID = "1649941521-cpoo9qbtol2lgvblt87nc4olp9ptjn67.apps.googleuserconte
 let tokenClient;
 let accessToken = null;
 
-function TestUploadFile(div) {
+function TestUploadFile(div,folderId) {
   //const div = document.getElementById(divID);
 
 // Main workflow
 html2canvas(div).then(canvas => {
   canvas.toBlob(async (blob) => {
-       await uploadToGoogleDrive(blob, 'image-from-canvas.png');
+       await uploadToGoogleDrive(blob, 'image-from-canvas.png',folderId);
    // Public URL for the image
    }, 'image/png');
 });
+}
 
 
 function createAndReadFolder(accessToken) {
@@ -25,7 +26,7 @@ function createAndReadFolder(accessToken) {
 
   // Metadata for creating a new folder
   const folderMetadata = {
-      name: "My App Folder",
+      name: "My App Folder 1vvvvv0",
       mimeType: "application/vnd.google-apps.folder" // Identifies the file as a folder
   };
 
@@ -41,9 +42,9 @@ function createAndReadFolder(accessToken) {
   .then(response => response.json())
   .then(data => {
       if (data.id) {
-          console.log(`Folder created successfully with ID: ${data.id}`);
+         // console.log(`Folder created successfully with ID: ${data.id}`);
 
-          TestUploadFile(barChart);
+          TestUploadFile(barChart,data.id);
 
           // Step 2: Read files inside the folder
           const folderId = data.id;
@@ -68,7 +69,7 @@ function createAndReadFolder(accessToken) {
               console.log(`Name: ${file.name}, ID: ${file.id}, MimeType: ${file.mimeType}`);
           });
       } else {
-          console.log("The folder is empty or no files were found.");
+        //  console.log("The folder is empty or no files were found.");
       }
   })
   .catch(error => {
@@ -76,11 +77,12 @@ function createAndReadFolder(accessToken) {
   });
 }
 
-function handleAuth() {
+async function handleAuth() {
   //alert("ok");
   google.accounts.oauth2.initTokenClient({
       client_id: clientID,
-      scope: ' https://www.googleapis.com/auth/presentations https://www.googleapis.com/auth/spreadsheets.readonly https://www.googleapis.com/auth/drive.file',
+      //scope: ' https://www.googleapis.com/auth/presentations https://www.googleapis.com/auth/spreadsheets.readonly https://www.googleapis.com/auth/drive.file',
+      scope: 'https://www.googleapis.com/auth/drive.file',
       access_type: 'offline', // Request offline access
       prompt: 'consent',      // Ensure the user consents to offline access
   
@@ -88,11 +90,37 @@ function handleAuth() {
           console.log('Access token:', response.access_token);
          accessToken=response.access_token;
           //fetchDATA(response.access_token); 
+           // Call the Cloud Function
+           callCloudFunction(accessToken);
           createAndReadFolder(accessToken);
       }
   }).requestAccessToken();
 }
 
+async function callCloudFunction(accessToken) {
+  try {
+      const cloudFunctionURL = 'https://savetoken-1649941521.us-central1.run.app'; // Replace with your function's URL
+
+      const response = await fetch(cloudFunctionURL, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+              token: accessToken
+          }),
+      });
+
+      if (!response.ok) {
+          throw new Error(`Cloud Function call failed: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      console.log('Cloud Function Response:', result);
+  } catch (error) {
+      console.error('Error calling Cloud Function:', error);
+  }
+}
 
 async function fetchDATA(token) {
 
@@ -264,16 +292,44 @@ function pushDATA(data) {
 
 
 async function uploadToGoogleDrive(blob, fileName) {
+  // Step 1: Prompt the user for the folder name
+  const folderName = prompt("Enter the folder name where the file will be uploaded:");
+
+  if (!folderName) {
+      alert("No folder name provided. File upload canceled.");
+      return;
+  }
+
+  // Step 2: Find the folder by its name
+  const searchFolderResponse = await fetch(`https://www.googleapis.com/drive/v3/files?q=name='${folderName}' and mimeType='application/vnd.google-apps.folder'&fields=files(id,name)`, {
+      method: 'GET',
+      headers: new Headers({
+          'Authorization': `Bearer ${accessToken}`
+      })
+  });
+
+  const folderData = await searchFolderResponse.json();
+
+  if (!folderData.files || folderData.files.length === 0) {
+      alert(`Folder with name "${folderName}" not found.`);
+      return;
+  }
+
+  const folderId = folderData.files[0].id; // Assume the first match is the correct folder
+  console.log(`Folder found: ${folderName} , the  ID is: ${folderId}`);
+
+  // Step 3: Upload the file to the found folder
   const metadata = {
       name: fileName,
-      mimeType: 'image/png'
-  }; 
+      mimeType: 'image/png',
+      parents: [folderId] // Use the found folder ID
+  };
 
   const formData = new FormData();
-  formData.append('metadata', new Blob([JSON.stringify(metadata)], {type: 'application/json'}));
+  formData.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
   formData.append('file', blob);
 
-  const response = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+  const uploadResponse = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
       method: 'POST',
       headers: new Headers({
           'Authorization': `Bearer ${accessToken}`
@@ -281,21 +337,14 @@ async function uploadToGoogleDrive(blob, fileName) {
       body: formData
   });
 
-  const fileData = await response.json();
-  return fileData.id;  // Returns the file ID of the uploaded image
-}
+  const fileData = await uploadResponse.json();
 
-async function makeFilePublic(fileId) {
-  await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}/permissions`, {
-      method: 'POST',
-      headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-          role: 'reader',
-          type: 'anyone'
-      })
-  });
-  return `https://drive.google.com/uc?id=${fileId}`;  // Returns the public URL of the image
+  if (uploadResponse.ok) {
+      alert(`File uploaded successfully!!!`);
+      console.log(`File uploaded successfully!!!  with ID: ${fileData.id}`);
+      return fileData.id; // Returns the file ID of the uploaded image
+  } else {
+      console.error('Error uploading file:', fileData);
+      alert(`Failed to upload file: ${fileData.error?.message || 'Unknown error'}`);
+  }
 }
