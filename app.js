@@ -82,7 +82,7 @@ async function handleAuth() {
   google.accounts.oauth2.initTokenClient({
       client_id: clientID,
       //scope: ' https://www.googleapis.com/auth/presentations https://www.googleapis.com/auth/spreadsheets.readonly https://www.googleapis.com/auth/drive.file',
-      scope: 'https://www.googleapis.com/auth/drive.file',
+      scope: 'ç',
       access_type: 'offline', // Request offline access
       prompt: 'consent',      // Ensure the user consents to offline access
   
@@ -91,36 +91,43 @@ async function handleAuth() {
          accessToken=response.access_token;
           //fetchDATA(response.access_token); 
            // Call the Cloud Function
-           callCloudFunction(accessToken);
+         //  callSaveTokensFunction(accessToken);
           createAndReadFolder(accessToken);
       }
   }).requestAccessToken();
 }
 
-async function callCloudFunction(accessToken) {
+async function callSaveTokensFunction(authCode) {
+  const url = 'https://savetoken-1649941521.us-central1.run.app'; // Your Cloud Function URL
+console.log(authCode);
+console.log("-----");
   try {
-      const cloudFunctionURL = 'https://savetoken-1649941521.us-central1.run.app'; // Replace with your function's URL
-
-      const response = await fetch(cloudFunctionURL, {
+      const response = await fetch(url, {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-              token: accessToken
+              AuthCode: authCode, // Match the backend model
           }),
       });
 
       if (!response.ok) {
-          throw new Error(`Cloud Function call failed: ${response.statusText}`);
+          const errorText = await response.text();
+          console.error(`Error: ${response.status} - ${errorText}`);
+          alert(`Request failed: ${errorText}`);
+      } else {
+          const result = await response.text();
+          console.log('Cloud Function Response:', result);
+          alert('Success: ' + result);
       }
-
-      const result = await response.json();
-      console.log('Cloud Function Response:', result);
   } catch (error) {
-      console.error('Error calling Cloud Function:', error);
+      console.error('Error sending request:', error);
+      alert('Error sending request: ' + error.message);
   }
 }
+
+
 
 async function fetchDATA(token) {
 
